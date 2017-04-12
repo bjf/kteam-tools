@@ -43,6 +43,10 @@ class Package():
         s.ubuntu = Ubuntu()
         s.__distro_series = None
 
+        esm = s.lp.launchpad.people['canonical-kernel-esm']
+        s.esm_build_ppa    = esm.getPPAByName(name='ppa')
+        s.esm_proposed_ppa = esm.getPPAByName(name='proposed')
+
         ckt = s.lp.launchpad.people['canonical-kernel-team']
         s.ckt_ppa = ckt.getPPAByName(name='ppa')
 
@@ -109,6 +113,21 @@ class Package():
     def __determine_build_status(s):
         center('Sources::__determine_build_status')
 
+        pockets = {
+            'kernel-development-workflow' : ['ckt-ppa', 'Proposed', 'Release'],
+            'kernel-sru-workflow'         : ['esm-build-ppa', 'esm-proposed-ppa', 'ckt-ppa', 'Proposed', 'Security', 'Updates']
+        }
+
+        archives = {
+            'esm-build-ppa'    : s.esm_build_ppa,
+            'esm-proposed-ppa' : s.esm_proposed_ppa,
+            'ckt-ppa'          : s.ckt_ppa,
+            'Proposed'         : s.main_archive,
+            'Security'         : s.main_archive,
+            'Updates'          : s.main_archive,
+            'Release'          : s.main_archive,
+        }
+
         s._cache = {}
 
         cinfo('')
@@ -133,40 +152,19 @@ class Package():
                 version = s.version
 
             s._cache[dep] = {}
-            s._cache[dep]['ppa'] = {}
-            info = s.__is_fully_built(s.pkgs[dep], abi, s.ckt_ppa, version, None)
-            s._cache[dep]['ppa']['built']   = info[0]
-            s._cache[dep]['ppa']['creator'] = info[1]
-            s._cache[dep]['ppa']['signer']  = info[2]
-            s._cache[dep]['ppa']['published'] = info[3]
-            s._cache[dep]['ppa']['most_recent_build'] = info[4]
-            s._cache[dep]['ppa']['status'] = info[5]
-            cinfo('%-8s : %-5s / %-10s    (%s : %s)' % ('ppa', info[0], info[5], info[3], info[4]), 'cyan')
-            if s.bug.sru_workflow_project:
-                cdebug('Stable Package', 'cyan')
-                cdebug('')
+            for pocket in pockets[s.bug.workflow_project]:
+                # print(dep + ' : ' + pocket)
+                s._cache[dep][pocket] = {}
 
-                for pocket in ['Proposed', 'Security', 'Updates']:
-                    s._cache[dep][pocket] = {}
-                    info = s.__is_fully_built(s.pkgs[dep], abi, s.main_archive, version, pocket)
-                    s._cache[dep][pocket]['built']   = info[0]
-                    s._cache[dep][pocket]['creator'] = info[1]
-                    s._cache[dep][pocket]['signer']  = info[2]
-                    s._cache[dep][pocket]['published'] = info[3]
-                    s._cache[dep][pocket]['most_recent_build'] = info[4]
-                    s._cache[dep][pocket]['status'] = info[5]
-                    cinfo('%-8s : %-5s / %-10s    (%s : %s)' % (pocket, info[0], info[5], info[3], info[4]), 'cyan')
-            else:
-                for pocket in ['Release', 'Proposed']:
-                    s._cache[dep][pocket] = {}
-                    info = s.__is_fully_built(s.pkgs[dep], abi, s.main_archive, version, pocket)
-                    s._cache[dep][pocket]['built']   = info[0]
-                    s._cache[dep][pocket]['creator'] = info[1]
-                    s._cache[dep][pocket]['signer']  = info[2]
-                    s._cache[dep][pocket]['published'] = info[3]
-                    s._cache[dep][pocket]['most_recent_build'] = info[4]
-                    s._cache[dep][pocket]['status'] = info[5]
-                    cinfo('%-8s : %-5s / %-10s    (%s : %s)' % (pocket, info[0], info[5], info[3], info[4]), 'cyan')
+                info = s.__is_fully_built(s.dependent_packages[dep], abi, archives[pocket], version, None if '-ppa' in pocket else pocket)
+                s._cache[dep][pocket]['built']   = info[0]
+                s._cache[dep][pocket]['creator'] = info[1]
+                s._cache[dep][pocket]['signer']  = info[2]
+                s._cache[dep][pocket]['published'] = info[3]
+                s._cache[dep][pocket]['most_recent_build'] = info[4]
+                s._cache[dep][pocket]['status'] = info[5]
+                cinfo('%-16s : %-5s / %-10s    (%s : %s)' % (pocket, info[0], info[5], info[3], info[4]), 'cyan')
+
             Clog.indent -= 4
 
         cdebug('')
