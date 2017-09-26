@@ -32,11 +32,6 @@ class Crankers():
                     for package in record['packages']:
                         data[series]['debs'].append(package)
 
-                    if 'snaps' in record:
-                        data[series]['snaps'] = []
-                        for snap in record['snaps']:
-                            data[series]['snaps'].append(snap)
-
             if s.args.yaml:
                 print(yaml.dump(data, default_flow_style=False, indent=4, explicit_start=True))
 
@@ -49,11 +44,6 @@ class Crankers():
                     print('    debs:')
                     for deb in sorted(data[series]['debs']):
                         print('        ' + deb)
-
-                    if 'snaps' in data[series]:
-                        print('    snaps:')
-                        for snap in sorted(data[series]['snaps']):
-                            print('        ' + snap)
 
             retval = 0
 

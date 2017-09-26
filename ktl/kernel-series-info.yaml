@@ -268,10 +268,6 @@
         - linux-signed-hwe
         - linux-kvm
         - linux-meta-kvm
-        snaps:
-        - pc-kernel
-        - raspi2-kernel
-        - snapdragon-kernel
         series_version: '16.04'
         supported: true
 
