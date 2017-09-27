@@ -246,6 +246,10 @@
             - linux-aws
             - linux-gke
             - linux-kvm
+        derivative-snaps:
+            linux:
+            - caracalla-kernel
+            - stlouis-kernel
         test_flavours:
             linux:
             - generic
