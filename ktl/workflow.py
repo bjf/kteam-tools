@@ -126,10 +126,10 @@ class Workflow:
     tdb = {
         'linux' :  {
             'task_assignment' : {
-                'kernel-snap-beta'           : 'canonical-kernel-team',
-                'kernel-snap-candidate'      : 'canonical-kernel-team',
-                'kernel-snap-edge'           : 'canonical-kernel-team',
-                'kernel-snap-stable'         : 'canonical-kernel-team',
+                'snap-release-to-beta'       : 'canonical-kernel-team',
+                'snap-release-to-candidate'  : 'canonical-kernel-team',
+                'snap-release-to-edge'       : 'canonical-kernel-team',
+                'snap-release-to-stable'     : 'canonical-kernel-team',
                 'prepare-package'            : 'canonical-kernel-team',
                 'prepare-package-lbm'        : 'canonical-kernel-team',
                 'prepare-package-lrm'        : 'canonical-kernel-team',
@@ -205,10 +205,10 @@ class Workflow:
         },
         'default' :  {
             'task_assignment' : {
-                'kernel-snap-beta'           : 'canonical-kernel-team',
-                'kernel-snap-candidate'      : 'canonical-kernel-team',
-                'kernel-snap-edge'           : 'canonical-kernel-team',
-                'kernel-snap-stable'         : 'canonical-kernel-team',
+                'snap-release-to-beta'       : 'canonical-kernel-team',
+                'snap-release-to-candidate'  : 'canonical-kernel-team',
+                'snap-release-to-edge'       : 'canonical-kernel-team',
+                'snap-release-to-stable'     : 'canonical-kernel-team',
                 'prepare-package'            : 'canonical-kernel-team',
                 'prepare-package-lbm'        : 'canonical-kernel-team',
                 'prepare-package-lrm'        : 'canonical-kernel-team',

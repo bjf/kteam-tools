@@ -41,7 +41,7 @@ class KernelSnapBase(TaskHandler):
         return retval
 
 
-class KernelSnapEdge(KernelSnapBase):
+class SnapReleaseToEdge(KernelSnapBase):
     '''
     '''
 
@@ -49,11 +49,11 @@ class KernelSnapEdge(KernelSnapBase):
     #
     def __init__(s, lp, task, bug):
         center(s.__class__.__name__ + '.__init__')
-        super(KernelSnapEdge, s).__init__(lp, task, bug)
+        super(SnapReleaseToEdge, s).__init__(lp, task, bug)
         cleave(s.__class__.__name__ + '.__init__')
 
 
-class KernelSnapBeta(KernelSnapBase):
+class SnapReleaseToBeta(KernelSnapBase):
     '''
     '''
 
@@ -61,11 +61,11 @@ class KernelSnapBeta(KernelSnapBase):
     #
     def __init__(s, lp, task, bug):
         center(s.__class__.__name__ + '.__init__')
-        super(KernelSnapBeta, s).__init__(lp, task, bug)
+        super(SnapReleaseToBeta, s).__init__(lp, task, bug)
         cleave(s.__class__.__name__ + '.__init__')
 
 
-class KernelSnapCandidate(KernelSnapBase):
+class SnapReleaseToCandidate(KernelSnapBase):
     '''
     '''
 
@@ -73,10 +73,10 @@ class KernelSnapCandidate(KernelSnapBase):
     #
     def __init__(s, lp, task, bug):
         center(s.__class__.__name__ + '.__init__')
-        super(KernelSnapCandidate, s).__init__(lp, task, bug)
+        super(SnapReleaseToCandidate, s).__init__(lp, task, bug)
         cleave(s.__class__.__name__ + '.__init__')
 
-class KernelSnapStable(KernelSnapBase):
+class SnapReleaseToStable(KernelSnapBase):
     '''
     A Task Handler for the prepare-package-lbm task.
     '''
@@ -85,7 +85,7 @@ class KernelSnapStable(KernelSnapBase):
     #
     def __init__(s, lp, task, bug):
         center(s.__class__.__name__ + '.__init__')
-        super(KernelSnapStable, s).__init__(lp, task, bug)
+        super(SnapReleaseToStable, s).__init__(lp, task, bug)
         cleave(s.__class__.__name__ + '.__init__')
 
 # vi: set ts=4 sw=4 expandtab syntax=python

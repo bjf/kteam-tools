@@ -37,10 +37,10 @@ class WorkflowManager():
             'promote-to-security'       : wfl.wft.PromoteToSecurity,
             'promote-to-release'        : wfl.wft.PromoteToRelease,
             'security-signoff'          : wfl.wft.SecuritySignoff,
-            'kernel-snap-edge'          : wfl.wft.KernelSnapEdge,
-            'kernel-snap-beta'          : wfl.wft.KernelSnapBeta,
-            'kernel-snap-candidate'     : wfl.wft.KernelSnapCandidate,
-            'kernel-snap-stable'        : wfl.wft.KernelSnapStable,
+            'snap-release-to-edge'      : wfl.wft.SnapReleaseToEdge,
+            'snap-release-to-beta'      : wfl.wft.SnapReleaseToBeta,
+            'snap-release-to-candidate' : wfl.wft.SnapReleaseToCandidate,
+            'snap-release-to-stable'    : wfl.wft.SnapReleaseToStable,
         }
 
         WorkflowBug.sauron            = s.args.sauron
