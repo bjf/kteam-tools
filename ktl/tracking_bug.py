@@ -32,6 +32,7 @@ class TrackingBug:
             'prepare-package',
             'prepare-package-meta',
             'prepare-package-signed',
+            'promote-to-proposed',
             'promote-to-release',
             'regression-testing',
         ]
