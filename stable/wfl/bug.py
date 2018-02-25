@@ -13,6 +13,7 @@ from ktl.shanky                         import send_to_shankbot
 from .errors                            import ShankError
 from .deltatime                         import DeltaTime
 from .task                              import WorkflowBugTask
+from ktl.kernel_series                  import KernelSeries
 
 
 # WorkflowBugError
@@ -155,6 +156,8 @@ class WorkflowBug():
 
         try:
             s.__package = Package(s.lp, s)
+            ks = KernelSeries().lookup_series(codename=s.__package.series)
+            s.is_development_series = ks.development
 
             # If the package is only partial (valid == False) then we are not valid either.
             if not s.__package.valid:
@@ -167,6 +170,7 @@ class WorkflowBug():
             cinfo('                   pkg_name: "%s"' % s.__package.name, 'blue')
             cinfo('                pkg_version: "%s"' % s.__package.version, 'blue')
             cinfo('                     series: "%s"' % s.__package.series, 'blue')
+            cinfo('      is development series: %s' % s.is_development_series, 'blue')
             for d in s.__package.pkgs:
                 cinfo('                        dep: "%s"' % d, 'blue')
 
