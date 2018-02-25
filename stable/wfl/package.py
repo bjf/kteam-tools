@@ -201,7 +201,7 @@ class Package():
                 version = s.version
 
             s._cache[dep] = {}
-            if s.bug.sru_workflow_project:
+            if not s.bug.is_development_series:
                 cdebug('Stable Package', 'cyan')
                 cdebug('')
                 scan_pockets = ('ppa', 'Proposed', 'Security', 'Updates')

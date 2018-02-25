@@ -238,7 +238,7 @@ class WorkflowBug():
     @property
     def master_bug_property_name(s):
         retval = 'kernel'
-        if s.sru_workflow_project:
+        if not s.is_development_series:
             retval += '-stable'
         retval += '-master-bug'
         return retval
@@ -347,8 +347,6 @@ class WorkflowBug():
             if task_name in WorkflowBug.projects_tracked:
                 workflow = True
                 s.workflow_project = task_name
-                s.dev_workflow_project = task_name == 'kernel-development-workflow'
-                s.sru_workflow_project = task_name == 'kernel-sru-workflow'
                 if t.status == 'In Progress':
                     valid = True
                     continue
@@ -403,10 +401,10 @@ class WorkflowBug():
         '''
         retval = True
 
-        if s.sru_workflow_project:
-            pocket = 'Updates'
-        else:
+        if s.is_development_series:
             pocket = 'Release'
+        else:
+            pocket = 'Updates'
 
         bi = s.__package.build_info
         for pkg in bi:
@@ -446,10 +444,10 @@ class WorkflowBug():
         '''
         retval = True
 
-        if s.sru_workflow_project:
-            pocket = 'Updates'
-        else:
+        if s.is_development_series:
             pocket = 'Release'
+        else:
+            pocket = 'Updates'
 
         bi = s.__package.build_info
         for pkg in bi:
@@ -728,7 +726,7 @@ class WorkflowBug():
     @property
     def phase_key(s):
         retval = 'kernel'
-        if s.sru_workflow_project:
+        if not s.is_development_series:
             retval += '-stable'
         retval += '-phase'
         return retval

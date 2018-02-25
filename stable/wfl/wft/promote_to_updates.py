@@ -125,7 +125,7 @@ class PromoteToUpdates(Promoter):
             if not s._security_signoff_verified():
                 break
 
-            if s.bug.sru_workflow_project:
+            if not s.bug.is_development_series:
                 # Check that the promote-to-security status matches -security pocket.
                 promote_to_security = s.bug.tasks_by_name['promote-to-security']
                 if promote_to_security.status not in ['Invalid', 'Fix Released']:

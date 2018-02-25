@@ -103,17 +103,14 @@ class Promoter(TaskHandler):
         '''
         center(s.__class__.__name__ + '.security_signoff_verified')
         retval = False
-        if s.bug.sru_workflow_project:
-            try:
-                if s.bug.tasks_by_name['security-signoff'].status in ['Fix Released', 'Invalid']:
-                    retval = True
-                else:
-                    cinfo('            security-signoff is neither "Fix Released" nor "Invalid" (%s)' % (s.bug.tasks_by_name['security-signoff'].status), 'yellow')
-            except KeyError:
-                # security-signoff doesn't exist on this tracking bug.
-                #
+        try:
+            if s.bug.tasks_by_name['security-signoff'].status in ['Fix Released', 'Invalid']:
                 retval = True
-        else:
+            else:
+                cinfo('            security-signoff is neither "Fix Released" nor "Invalid" (%s)' % (s.bug.tasks_by_name['security-signoff'].status), 'yellow')
+        except KeyError:
+            # security-signoff doesn't exist on this tracking bug.
+            #
             retval = True
         cleave(s.__class__.__name__ + '.security_signoff_verified (%s)' % retval)
         return retval
@@ -125,17 +122,14 @@ class Promoter(TaskHandler):
         '''
         center(s.__class__.__name__ + '.stakeholder_signoff_verified')
         retval = False
-        if s.bug.sru_workflow_project:
-            try:
-                if s.bug.tasks_by_name['stakeholder-signoff'].status in ['Fix Released', 'Invalid']:
-                    retval = True
-                else:
-                    cinfo('            stakeholder-signoff is neither "Fix Released" nor "Invalid" (%s)' % (s.bug.tasks_by_name['security-signoff'].status), 'yellow')
-            except KeyError:
-                # stakeholder-signoff must not exist
-                #
+        try:
+            if s.bug.tasks_by_name['stakeholder-signoff'].status in ['Fix Released', 'Invalid']:
                 retval = True
-        else:
+            else:
+                cinfo('            stakeholder-signoff is neither "Fix Released" nor "Invalid" (%s)' % (s.bug.tasks_by_name['security-signoff'].status), 'yellow')
+        except KeyError:
+            # stakeholder-signoff must not exist
+            #
             retval = True
         cleave(s.__class__.__name__ + '.stakeholder_signoff_verified (%s)' % retval)
         return retval
@@ -170,7 +164,7 @@ class Promoter(TaskHandler):
                 if s.bug.tasks_by_name['promote-to-proposed'] in ['Fix Released']:
                     # Make sure the block-proposed tag is on while testing is still happening.
                     #
-                    if s.bug.dev_workflow_project:
+                    if s.bug.is_development_series:
                         if 'block-proposed' not in s.bug.tags:
                             s.bug.lpbug.tags.append('block-proposed')
                     else:
@@ -209,7 +203,7 @@ class Promoter(TaskHandler):
             required_sru_tasks['automated-testing']     = ['Fix Released', 'Invalid']
             required_sru_tasks['regression-testing']    = ['Fix Released', 'Invalid']
 
-            if master.sru_workflow_project:
+            if not master.is_development_series:
                 required_sru_tasks['certification-testing'] = ['Fix Released', 'Invalid']
                 required_sru_tasks['verification-testing']  = ['Fix Released', 'Invalid']
 

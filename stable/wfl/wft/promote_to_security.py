@@ -43,7 +43,7 @@ class PromoteToSecurity(Promoter):
             # If the security-signoff task is 'Invalid' then this task should also
             # be 'Invalid'. This task will no longer be processed after that.
             #
-            if s.bug.sru_workflow_project:
+            if not s.bug.is_development_series:
                 if s.bug.tasks_by_name['security-signoff'].status == 'Invalid':
                     s.task.status = 'Invalid'
                     retval = True
