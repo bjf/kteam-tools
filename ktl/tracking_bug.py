@@ -413,11 +413,7 @@ class TrackingBug:
         #
 
         lp = self.lp.launchpad
-        if self.isdev:
-            project = 'kernel-development-workflow'
-        else:
-            project = 'kernel-sru-workflow'
-
+        project = 'kernel-sru-workflow'
         cdebug("")
         cdebug("Adding %s task." % project, 'blue')
         self.lp_project = lp.projects[project]
