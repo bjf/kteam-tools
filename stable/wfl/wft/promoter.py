@@ -156,7 +156,7 @@ class Promoter(TaskHandler):
                 'automated-testing',
                 'regression-testing',
             ]
-            if s.bug.sru_workflow_project:
+            if not s.bug.is_development_series:
                 testing_tasks.append('certification-testing')
                 testing_tasks.append('verification-testing')
             tested = True
