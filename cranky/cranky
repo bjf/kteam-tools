@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 here=$(dirname "$(readlink -f "${0}")")
 
@@ -9,9 +9,9 @@ fi
 cmd="$1"
 shift
 
-if [ ! -f "$here/cranky-$cmd" ]; then
+if [ ! -f "$here/$cmd" ]; then
 	echo "$0: $cmd: command unknown" 1>&2
 	exit 1
 fi
 
-C="$0" P="cranky $cmd" exec "$here/cranky-$cmd" "$@"
+C="$0" P="cranky $cmd" exec "$here/$cmd" "$@"
