@@ -1,17 +1,65 @@
 #!/bin/bash -eu
+#
+# Cranky wrapper script. This is the main entry point into the cranky toolset.
+#
 
 here=$(dirname "$(readlink -f "${0}")")
 
-if [ "$#" -lt 1 ]; then
-	echo "Usage: $0 <cmd> ..." 1>&2
+if [ "${#}" -eq 0  ] ; then
+	echo "Usage: cranky <cmd> [options]" >&2
 	exit 1
 fi
-cmd="$1"
+
+cmd="${1}"
 shift
 
-if [ ! -f "$here/$cmd" ]; then
-	echo "$0: $cmd: command unknown" 1>&2
+# Figure out if this is a cranky helper script or a 'regular' cranky script.
+# A helper script also exists in the kernel tree in wich case we need to use
+# the in-tree version rather than the version from kteam-tools and also run
+# it in a chroot.
+if  [ -f "${here}/master-helpers/${cmd}" ] ; then
+	# Script is a cranky helper script
+
+	# Sanity check: Verify we're in a Debian source tree
+	if [ ! -d debian ]; then
+		echo "${cmd}: Should be run in a source package tree" >&2
+		exit 1
+	fi
+
+	# Assemble the list of potential helper scripts
+	scripts=()
+	if [ -f debian/debian.env ] ; then
+		# shellcheck disable=SC1091
+		. debian/debian.env
+		scripts+=("${DEBIAN}/scripts/helpers/${cmd}")
+	fi
+	scripts+=("debian/scripts/helpers/${cmd}" "${here}/master-helpers/${cmd}")
+
+	# Find the first helper script in the list
+	for script in "${scripts[@]}" ; do
+		if [ -x "${script}" ] ; then
+			break
+		fi
+	done
+
+	# Assemble the schroot command
+	session=$("${here}/cranky" chroot map-session configs .)
+	if [ "${session}" = "$(printf '%q' "${session}")" ] ; then
+		export CHROOT="schroot -r -c ${session} --"
+	else
+		echo "Invalid chroot session: \"${session}\"" >&2
+		exit 1
+	fi
+
+elif [ -f "${here}/${cmd}" ] ; then
+	# Script is a 'regular' cranky script
+	script=${here}/${cmd}
+
+else
+	# Invalid command provided
+	echo "${0}: ${cmd}: Unknown command" >&2
 	exit 1
 fi
 
-C="$0" P="cranky $cmd" exec "$here/$cmd" "$@"
+export C="${0}" P="cranky ${cmd}"
+exec "${script}" "${@}"
