@@ -9,7 +9,7 @@
 # Juerg Haefliger <juergh@canonical.com>
 #
 
-# cranky-checkout
+# cranky checkout
 #checkout:
   # A local reference kernel repo used for cloning the Ubuntu kernel repo.
   # Using this speeds up the cloning process considerably. See
@@ -20,7 +20,7 @@
   # --dissociate, for more details.
   #dissociate: True
 
-# cranky-test-build
+# cranky test-build
 #test-build:
   # The directory where the logfiles are written to
   #logdir: /path/to/logdir

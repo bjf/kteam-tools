@@ -15,7 +15,9 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Add cranky-tools to the PATH and enable bash auto-completion
+# Add the trello tools/libraries to the Python PATH
 export PYTHONPATH=:$HOME/canonical/so-trello:$PYTHONPATH
-export PATH=$HOME/canonical/kteam-tools/cranky:$PATH
+
+# Add an alias to the cranky wrapper and enable bash auto-completion
+alias cranky=$HOME/canonical/kteam-tools/cranky/cranky
 source $HOME/canonical/kteam-tools/cranky/cranky-complete.bash

@@ -265,21 +265,21 @@ updateconfig" and checking no changes have been done;
 
 **Note** It's possible that config changes were made in this release that trigger
 further config changes (e.g. dependency config options). In that case, those
-dependency changes will be generated when running 'updateconfigs', and cranky-
+dependency changes will be generated when running 'updateconfigs', and cranky
 close will print a message about those config changes and then exit early without
 committing anything to the tree.
 
 Those generated config changes need to be manually committed by the user first
-before cranky-close can resume. The commit message for those changes should
+before cranky close can resume. The commit message for those changes should
 reference the bug number that caused the original config change.
 
 In some cases, 'updateconfigs' will trigger a user prompt asking the user to
 specify a value for the dependency config options. The value that should be
 specified depends on the kernel being cranked and the config option in question.
-Again, those config changes need to be manually committed before cranky-close can
+Again, those config changes need to be manually committed before cranky close can
 continue.
 
-After committing all dependency config changes, cranky-close needs to be re-run and
+After committing all dependency config changes, cranky close needs to be re-run and
 it should add the closing commit normally at that point.
 
 2) Runs "insert-ubuntu-changes" to insert into the changelog the changes that
@@ -316,7 +316,7 @@ they will **not** be grouped in the changelog.
 ### Testing builds - `cranky test-build`
 <!--cheatsheet-->
 ```
-cranky-test-build [-a ARCH[,ARCH,...]|-a all] [-f] HOST
+cranky test-build [-a ARCH[,ARCH,...]|-a all] [-f] HOST
 ```
 <!--/cheatsheet-->
 
@@ -416,9 +416,9 @@ Example:
 
 ```
 $ cd ..
-$ cranky-pull-source linux-oracle xenial
-$ cranky-pull-source linux-meta-oracle xenial
-$ cranky-pull-source linux-signed-oracle xenial
+$ cranky pull-source linux-oracle xenial
+$ cranky pull-source linux-meta-oracle xenial
+$ cranky pull-source linux-signed-oracle xenial
 $ cd -
 ```
 
