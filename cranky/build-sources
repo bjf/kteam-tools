@@ -86,7 +86,7 @@ done
 
 trap out EXIT INT TERM HUP
 
-sources=$("$here/cranky-shell-helper" source-packages-path "$handle")
+sources=$("$here/cranky" shell-helper source-packages-path "$handle")
 if [ -z "$sources" ] ; then
 	exit 1
 fi

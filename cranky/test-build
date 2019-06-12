@@ -57,7 +57,7 @@ function pr_result()
 function usage()
 {
 	cat <<EOF
-Usage: cranky-test-build [-a ARCH[,ARCH,...]] [-c COMMIT] [-d] [-f] [-h] [-p]
+Usage: cranky test-build [-a ARCH[,ARCH,...]] [-c COMMIT] [-d] [-f] [-h] [-p]
                          [-t TARGET] HOST
 
 Build kernel binary packages using Kamal's git-build-kernel build script.
@@ -84,14 +84,14 @@ Optional arguments:
 
 Examples:
   Build binary packages for the host architecture from the current commit:
-    $ cranky-test-build kathleen
+    $ cranky test-build kathleen
 
   Build packages for all supported architectures:
-    $ cranky-test-build -a all kathleen
+    $ cranky test-build -a all kathleen
 
   Build binary packages of kernel flavor 'generic' from branch 'testing' for
   architecture ppc64el:
-    $ cranky-test-build -c testing -t binary-generic -a ppc64el kathleen
+    $ cranky test-build -c testing -t binary-generic -a ppc64el kathleen
 
 Current limitations:
   1) The build host must be accessible using password-less SSH.
@@ -263,7 +263,7 @@ pr_info "Creating a temporary build branch ${BUILD_BRANCH}"
 git branch "${BUILD_BRANCH}" "${commit}"
 
 # Get the logdir from the config file and create it if it doesn't exist
-logdir=$("$here/cranky-shell-helper" test-build logdir)
+logdir=$("$here/cranky" shell-helper test-build logdir)
 logdir=${logdir/#\~\//${HOME}/}   # Replace ~/ with ${HOME}/
 logdir=${logdir:-.}
 if ! [ -d "${logdir}" ] ; then

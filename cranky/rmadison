@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# cranky-rmadison: An rmadison-like script for querying the Ubuntu archives
+# cranky rmadison: An rmadison-like script for querying the Ubuntu archives
 #                  and private PPAs.
 #
 # Copyright (C) 2018, Canonical Ltd.
@@ -139,15 +139,16 @@ privileges to query the various private PPAs.
 
     epilog = """
 Examples:
-  $ cranky-rmadison bionic:linux
+  $ cranky rmadison bionic:linux
       Print information for the source packages that make up the set of Bionic
       linux kernel packages.
 
-  $ cranky-rmadison -e -a bionic:linux-ibm-gt
+  $ cranky rmadison -e -a bionic:linux-ibm-gt
       Print all information from all archives and PPAs.
 """
 
-    parser = argparse.ArgumentParser(description=desc, formatter_class=
+    parser = argparse.ArgumentParser(prog="cranky rmadison",
+                                     description=desc, formatter_class=
                                      argparse.RawDescriptionHelpFormatter,
                                      epilog=epilog)
     parser.add_argument("handle", nargs='?', help="A kernel package handle "

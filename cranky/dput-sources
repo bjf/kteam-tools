@@ -55,7 +55,7 @@ function dput_src()
 function usage()
 {
 	cat <<EOF
-Usage: cranky-dput-sources [-h] DESTINATION [HANDLE]
+Usage: cranky dput-sources [-h] DESTINATION [HANDLE]
 
 Upload the kernel source packages specified by HANDLE to the DESTINATION PPA.
 The script will show the details of the destination PPA and list the source
@@ -63,7 +63,7 @@ packages that it wants to upload and wait for user confirmation before doing
 the actual upload.
 
 Positional arguments:
-  DESTINATION  An upload destination as listed by cranky-list-routing.
+  DESTINATION  An upload destination as listed by cranky list-routing.
   HANDLE       Handle to a kernel source tree, either a path to a kernel
                source tree or a handle in <series>:<package> format. If not
                given the current working directory is used.
@@ -72,11 +72,11 @@ Optional arguments:
   -h, --help  Show this help text and exit.
 
 Example:
-  $ cranky-dput-sources build
+  $ cranky dput-sources build
       Upload the kernel source packages of the current directory to the
       standard builder PPA for that kernel.
 
-  $ cranky-dput-sources security-build xenial:linux
+  $ cranky dput-sources security-build xenial:linux
       Upload the Xenial linux kernel source packages to the security builder
       PPA.
 EOF
@@ -121,7 +121,7 @@ fi
 trap out EXIT INT TERM HUP
 
 # Get the PPA for the given upload destination
-ppa=$("${here}"/cranky-list-routing "${handle}" | \
+ppa=$("${here}"/cranky list-routing "${handle}" | \
 		  awk '$1 == "'"${dest}"'" { print $3 }')
 if [ -z "${ppa}" ] ; then
 	echo "No PPA found for destination ${dest}" >&2
@@ -131,7 +131,7 @@ fi
 echo "PPA: ${ppa}"
 
 # Get the source directories for the package set
-readarray -t srcs < <("${here}"/cranky-shell-helper source-packages-path \
+readarray -t srcs < <("${here}"/cranky shell-helper source-packages-path \
 							   "${handle}")
 if [ "${#srcs[@]}" -eq 0 ] ; then
 	exit 1

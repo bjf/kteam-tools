@@ -3,7 +3,7 @@
 function usage()
 {
 	cat <<EOF
-Usage: cranky-link-tb [-d] [-h] [-r] [-s SRU_CYCLE]
+Usage: cranky link-tb [-d] [-h] [-r] [-s SRU_CYCLE]
 
 Find and update the Launchpad tracking bug to reflect the proposed
 kernel version being created, and make a local git commit with a link

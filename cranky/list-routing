@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# cranky-list-routing: Print the routing information for a kernel package
+# cranky list-routing: Print the routing information for a kernel package
 #                      in a pretty table.
 #
 # Copyright (C) 2018, Canonical Ltd.
@@ -53,17 +53,18 @@ List the known routing information for a kernel package (set).
 
     epilog = """
 Examples:
-  $ cranky-list-routing
+  $ cranky list-routing
       Print the routing information for the current working directory.
 
-  $ cranky-list-routing bionic:linux
+  $ cranky list-routing bionic:linux
       Print the routing information for the Bionic 'linux' kernel package set.
 
-  $ cranky-list-routing /path/to/a/kernel/package/directory
+  $ cranky list-routing /path/to/a/kernel/package/directory
       Print the routing information for the specified kernel directory.
 """
 
-    parser = argparse.ArgumentParser(description=desc, formatter_class=
+    parser = argparse.ArgumentParser(prog="cranky list-routing",
+                                     description=desc, formatter_class=
                                      argparse.RawDescriptionHelpFormatter,
                                      epilog=epilog)
     parser.add_argument("handle", nargs='?', help="Handle to a kernel source "

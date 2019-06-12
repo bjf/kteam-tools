@@ -155,18 +155,19 @@ published on the specified pocket (default from -proposed).
 
     epilog = """
 Examples:
-    $ cranky-update-snap
+    $ cranky update-snap
         Get source package version from -proposed and automatically tag.
 
-    $ cranky-update-snap --updates
+    $ cranky update-snap --updates
         Get source package version from -updates and automatically tag.
 
-    $ cranky-update-snap --no-tag
+    $ cranky update-snap --no-tag
         Get source package version from -proposed and don't tag, showing only
         the 'git tag' command to be run.
 """
 
-    parser = argparse.ArgumentParser(description=desc, epilog=epilog,
+    parser = argparse.ArgumentParser(prog="cranky update-snap",
+                                     description=desc, epilog=epilog,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dry-run", action="store_true", default=False,
                         help="do not make any changes, just show what would be done")

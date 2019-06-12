@@ -297,19 +297,19 @@ are specified in the cranky config file (see 'package-path' in the
 
     epilog = """
 Examples:
-  $ cranky-checkout xenial:linux
+  $ cranky checkout xenial:linux
       Checkout the 'linux', 'linux-meta' and 'linux-signed' repositories for
       Xenial.
 
-  $ cranky-checkout --reference /home/work/linux-2.6 xenial:linux
+  $ cranky checkout --reference /home/work/linux-2.6 xenial:linux
       Same as above but use a local clone of Linus' upstream repo as a git
       reference.
 
-  $ cranky-checkout xenial:linux-aws
+  $ cranky checkout xenial:linux-aws
       Checkout the 'linux-aws', 'linux-meta-aws' and 'linux-signed-aws'
       repositories for the Xenial AWS variant.
 
-  $ cranky-checkout xenial:linux-raspi2
+  $ cranky checkout xenial:linux-raspi2
       This variant doesn't have stand-alone repos but instead resides on
       branches of the main 'linux', 'linux-meta' and 'linux-signed' repos. See
       below for more details.
@@ -343,7 +343,7 @@ Handle to a kernel source tree in <series>:<package> format.
 Obtain objects from an existing local repository to speed up the cloning
 process. This is a git clone option, check 'git help clone' for more details.
 Note that without using --dissociate, the referenced repo *must not* be deleted
-otherwise the cranky-checkout'd repo will get corrupted.
+otherwise the cranky checkout'd repo will get corrupted.
 """
 
     help_dissociate = """
@@ -351,7 +351,8 @@ Borrow the objects from the referenced local repository only to reduce network
 traffic. This is a git clone option, check 'git help clone' for more details.
 """
 
-    parser = argparse.ArgumentParser(description=desc, formatter_class=
+    parser = argparse.ArgumentParser(prog="cranky checkout",
+                                     description=desc, formatter_class=
                                      argparse.RawDescriptionHelpFormatter,
                                      epilog=epilog)
     parser.add_argument("handle", help=help_handle)

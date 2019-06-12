@@ -152,7 +152,8 @@ latest ABI files and performing sanity checks.
 """
 
     formatter = argparse.RawDescriptionHelpFormatter
-    parser = argparse.ArgumentParser(description=desc, epilog=epilog,
+    parser = argparse.ArgumentParser(prog="cranky start",
+                                     description=desc, epilog=epilog,
                                      formatter_class=formatter)
     parser.add_argument("--dry-run", action="store_true", default=False,
                         help="do not make any changes, " +
@@ -162,8 +163,8 @@ latest ABI files and performing sanity checks.
     parser.add_argument("--ignore-abi-errors", action="store_true",
                         default=False, help="ignore missing ABI files")
     parser.add_argument("--force", action="store_true", default=False,
-                        help="cranky-open is preferred over cranky-start, " +
-                        "give this option to use cranky-start instead")
+                        help="cranky open is preferred over cranky start, " +
+                        "give this option to use cranky start instead")
     args = parser.parse_args()
 
     Clog.color = True
@@ -175,8 +176,8 @@ latest ABI files and performing sanity checks.
         logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     if not args.force:
-        cerror("cranky-open should be used instead of cranky-start.")
-        cerror("If you really intend to use cranky-start, please use --force.")
+        cerror("cranky open should be used instead of cranky start.")
+        cerror("If you really intend to use cranky start, please use --force.")
         sys.exit(1)
 
     cranky_start = CrankyStart(dry_run=args.dry_run, debug=args.debug,

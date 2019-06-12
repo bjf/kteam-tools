@@ -2,11 +2,10 @@
 export LC_ALL=C.UTF-8
 
 # Check if the script was invoked via an symlink (ie:
-# cranky-updateconfigs):
+# cranky updateconfigs):
 alias=
-P="${P:-$(basename "$0")}"
-if [ "${P#cranky[- ]}" != 'fdr' ]; then
-	alias="${P#cranky[- ]}"
+if [ "${P#* }" != "fdr" ] ; then
+	alias=${P#* }
 fi
 
 usage() {

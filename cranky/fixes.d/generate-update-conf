@@ -41,7 +41,7 @@ if parent_package.repo.branch:
 # of spinning over the debian.*/ directories. Checking the local
 # directories doesn't work well, since we might need to rebase the
 # kernel first to get the updated DEBIAN_MASTER value and we need to
-# update DEBIAN_MASTER in order to rebase it with cranky-rebase.
+# update DEBIAN_MASTER in order to rebase it with cranky rebase.
 #
 # We check the parent kernel's name and assume "debian.master" for
 # "linux" and "debian.BRANCH" for "linux-BRANCH":

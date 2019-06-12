@@ -217,7 +217,7 @@ case "$session" in
 sources|configs)	session="sources" ;;
 esac
 
-series_source=$( "$here/cranky-shell-helper" "handle-to-series-source" "$handle" )
+series_source=$( "$here/cranky" shell-helper handle-to-series-source "$handle" )
 if [ "$series_source" = "" ]; then
 	echo "$0: $handle: unknown series/package" 1>&2
 	exit 1

@@ -6,8 +6,8 @@
 function usage()
 {
 	cat <<EOF
-Usage: cranky-pull-source [-h] SOURCE_PACKAGE VERSION RELEASE
-       cranky-pull-source [-h] SOURCE_PACKAGE [VERSION|RELEASE]
+Usage: cranky pull-source [-h] SOURCE_PACKAGE VERSION RELEASE
+       cranky pull-source [-h] SOURCE_PACKAGE [VERSION|RELEASE]
 
 Downloads the specified VERSION of the kernel source package SOURCE_PACKAGE
 from Launchpad, or the latest version of the specified RELEASE.
@@ -29,16 +29,16 @@ Optional arguments:
   -h, --help    Show this help text and exit.
 
 Examples:
-  $ cranky-pull-source linux
+  $ cranky pull-source linux
     Downloads the latest linux package from the development release.
 
-  $ cranky-pull-source linux 4.4.0-149.175
+  $ cranky pull-source linux 4.4.0-149.175
     Downloads the linux package with version 4.4.0-149.175.
 
-  $ cranky-pull-source linux xenial
+  $ cranky pull-source linux xenial
     Downloads the latest linux package from Xenial.
 
-  $ cranky-pull-source linux-ibm-gt 4.15.0-1023.24 bionic
+  $ cranky pull-source linux-ibm-gt 4.15.0-1023.24 bionic
     Downloads the linux-ibm-gt package with version 4.15.0-1023.24 from the
     PPA listed in ~/.getabis.bionic-ibm-gt.
 EOF

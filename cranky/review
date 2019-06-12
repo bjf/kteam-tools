@@ -188,7 +188,8 @@ Examples:
       specified path.
 """
 
-    parser = argparse.ArgumentParser(description=desc, formatter_class=
+    parser = argparse.ArgumentParser(prog="cranky review",
+                                     description=desc, formatter_class=
                                      argparse.RawDescriptionHelpFormatter,
                                      epilog=epilog)
     parser.add_argument("changes_files", nargs="+",

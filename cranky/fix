@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# cranky-fix -- identify the current repository and attempt to apply fixes to
+# cranky fix -- identify the current repository and attempt to apply fixes to
 #               it against the primary copies of repositories.
 #
 
@@ -26,7 +26,7 @@ if [ -f "debian/debian.env" ]; then
 	debian=$(awk -F= '($1 == "DEBIAN") { print $2 }' <debian/debian.env)
 fi
 # Idenfify the tree package type.
-type=$("$here/cranky-shell-helper" tree-type ".")
+type=$("$here/cranky" shell-helper tree-type .)
 if [ "$type" = "" ]; then
 	echo "$0: unable to identify repository type -- assuming other" 1>&2
 	type='other'
@@ -40,7 +40,7 @@ fi
 
 main_path=""
 if [ "$type" != 'main' ]; then
-	main_path="$("$here/cranky-shell-helper" tree-main-path ".")"
+	main_path="$("$here/cranky" shell-helper tree-main-path .)"
 	if [ "$main_path" = '' ]; then
 		exit 1
 	fi
