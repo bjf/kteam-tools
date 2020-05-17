@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+#
+
+import sys
+from os                                 import path
+from argparse                           import ArgumentParser, RawTextHelpFormatter
+from subprocess                         import run, PIPE, STDOUT
+
+from ktl.kernel_series                  import KernelSeries
+from ktl.debian                         import Debian
+from ktl.color                          import Color
+import ktl.colored
+
+def sh(cmd):
+    results = run(cmd, check=True, stdout=PIPE, stderr=STDOUT)
+    output = results.stdout.decode('utf-8').split('\n')
+    return output
+
+class Clr(Color):
+    BOLD_LABEL = ktl.colored.fg('green') + ktl.colored.attr('bold')
+    LABEL   = ktl.colored.fg('green')
+    VALUE   = ktl.colored.fg('cyan') + ktl.colored.attr('bold')
+    SECTION = ktl.colored.fg('yellow_1')
+
+class Kaishi(object):
+    def __init__(self):
+        kernel_source    = Debian.get_source_from_kernel_series()
+        self.codename    = kernel_source.series.codename
+        self.master      = kernel_source.derived_from is None
+        self.development = kernel_source.series.development
+
+        print(Clr.style('{:>15s}'.format('Codename: '), Clr.BOLD_LABEL) + Clr.style(self.codename, Clr.VALUE))
+        print(Clr.style('{:>15s}'.format('Master: '), Clr.BOLD_LABEL) + Clr.style(self.master, Clr.VALUE))
+        print(Clr.style('{:>15s}'.format('Development: '), Clr.BOLD_LABEL) + Clr.style(self.development, Clr.VALUE))
+        print()
+
+    def cmd_update_version_dkms(self):
+        if path.exists('./update-version-dkms'):
+            print(Clr.style('{:s}'.format('Updating DKMS Versions ...'), Clr.SECTION))
+            pocket = 'proposed' if self.development else 'updates'
+            cmd = ['./update-version-dkms', pocket]
+            output = sh(cmd)
+            for line in output:
+                if line == '': continue
+                (pkg, other) = line.split(':')
+                (version, where) = other.split('found')
+                output  = Clr.style('{:>30s}'.format(pkg), Clr.LABEL)
+                output += ':'
+                output += Clr.style('{:s}'.format(version), Clr.VALUE)
+                output += 'found' + where
+                print(output)
+            print()
+        else:
+            print('./update-version-dkms doesn\'t exist')
+
+    def cmd_fix(self):
+        print(Clr.style('{:s}'.format('Fixing ...'), Clr.SECTION))
+        cmd = ['cranky', 'fix']
+        output = sh(cmd)
+        for line in output:
+            print(line)
+        print()
+
+    def cmd_rebase(self):
+        cmd = ['cranky', 'rebase']
+
+    def cmd_open(self):
+        cmd = ['cranky', 'open']
+
+    def execute(self):
+        self.cmd_update_version_dkms()
+        self.cmd_fix()
+        self.cmd_rebase()
+        self.cmd_fix()
+        self.cmd_open()
+        return 0
+
+
+if __name__ == '__main__':
+    app_description = '''"start" the cranking of a set of kernel packages.
+    '''
+    app_epilog = '''
+Examples:
+    cranky kaishi
+    '''
+
+    parser = ArgumentParser(description=app_description, epilog=app_epilog, formatter_class=RawTextHelpFormatter)
+    args = parser.parse_args()
+
+    kernel_series = KernelSeries()
+
+    exit(Kaishi().execute())
