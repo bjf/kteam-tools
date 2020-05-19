@@ -2,6 +2,7 @@
 #
 
 import os
+import shutil
 from argparse                           import ArgumentParser, RawTextHelpFormatter
 from subprocess                         import run, PIPE, STDOUT
 
@@ -44,13 +45,13 @@ class RemotesSetup(object):
             # If the hook already exists, assume the repo is good and there isn't anything
             # to do.
             #
-            if not os.path.exists('/home/bradf/stable/%s/%s/hooks/post-receive' % (codename, package)):
-                if pkg == 'linux':
-                    cmd = ['git', 'clone', '--bare', '/usr3/ubuntu/ubuntu-%s' % codename, '/home/bradf/stable/%s/%s' % (codename, package)]
-                else:
-                    cmd = ['git', 'clone', '--bare', '/usr3/ubuntu/ubuntu--%s-%s' % (pkg, codename), '/home/bradf/stable/%s/%s' % (codename, package)]
-                sh(cmd)
-                os.symlink('/usr3/ubuntu/kteam-tools/git-build-kernel/post-receive', '/home/bradf/stable/%s/%s/hooks/post-receive' % (codename, package))
+            shutil.rmtree('/home/bradf/stable/%s/%s' % (codename, package), ignore_errors=True)
+            if pkg == 'linux':
+                cmd = ['git', 'clone', '/usr3/ubuntu/ubuntu-%s' % codename, '/home/bradf/stable/%s/%s' % (codename, package)]
+            else:
+                cmd = ['git', 'clone', '/usr3/ubuntu/ubuntu-%s-%s' % (pkg, codename), '/home/bradf/stable/%s/%s' % (codename, package)]
+            sh(cmd)
+            os.symlink('/usr3/ubuntu/kteam-tools/git-build-kernel/post-receive', '/home/bradf/stable/%s/%s/.git/hooks/post-receive' % (codename, package))
         except HandleError:
             print('** Error: The handle is not recognised. The handle format is: <series>:<package>.')
 
