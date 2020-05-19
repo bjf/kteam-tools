@@ -6,15 +6,16 @@ from subprocess                         import run, PIPE, STDOUT
 
 from crl.handle                         import Handle, HandleError
 
-def sh(cmd):
+def sh(cmd, quiet=False):
     '''
     A small wrapper around subprocess.run because I always run it the same way.
     '''
     results = run(cmd, check=True, stdout=PIPE, stderr=STDOUT)
     output = results.stdout.decode('utf-8').split('\n')
-    if len(output) > 1 or output[0] != '':
-        for line in output:
-            print(line)
+    if not quiet:
+        if len(output) > 1 or output[0] != '':
+            for line in output:
+                print(line)
     return output
 
 class RemotesSetup(object):
@@ -35,16 +36,18 @@ class RemotesSetup(object):
             codename = hs.series.codename
 
             for builder in self.builders:
-                cmd = ['git', 'remote', 'remove', builder]
-                sh(cmd)
+                try:
+                    cmd = ['git', 'remote', 'remove', builder]
+                    sh(cmd)
+                except:
+                    pass # eat the exception and move along
 
                 package = hs.trees[0].package.name
                 cmd = ['git', 'remote', 'add', builder, f'ssh://{builder}/home/bradf/stable/{codename}/{package}']
-                sh(cmd)
+                sh(cmd, quiet=True)
 
                 cmd = ['ssh', builder, 'cranky', 'remote-git-remotes-setup', args.handle]
-                sh(cmd)
-                print(cmd)
+                sh(cmd, quiet=True)
 
         except HandleError:
             print('** Error: The handle is not recognised. The handle format is: <series>:<package>.')
