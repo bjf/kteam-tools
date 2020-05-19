@@ -7,34 +7,59 @@ from argparse                           import ArgumentParser, RawTextHelpFormat
 from subprocess                         import run, PIPE, STDOUT
 
 from ktl.kernel_series                  import KernelSeries
-from ktl.debian                         import Debian
+from ktl.debian                         import Debian, GitError, DebianError
 from ktl.color                          import Color
 import ktl.colored
 
 def sh(cmd):
+    '''
+    A small wrapper around subprocess.run because I always run it the same way.
+    '''
     results = run(cmd, check=True, stdout=PIPE, stderr=STDOUT)
     output = results.stdout.decode('utf-8').split('\n')
     return output
 
 class Clr(Color):
+    '''
+    '''
     BOLD_LABEL = ktl.colored.fg('green') + ktl.colored.attr('bold')
     LABEL   = ktl.colored.fg('green')
     VALUE   = ktl.colored.fg('cyan') + ktl.colored.attr('bold')
     SECTION = ktl.colored.fg('yellow_1')
 
-class Kaishi(object):
-    def __init__(self):
-        kernel_source    = Debian.get_source_from_kernel_series()
-        self.codename    = kernel_source.series.codename
-        self.master      = kernel_source.derived_from is None
-        self.development = kernel_source.series.development
+class NotAKernelRepo(Exception):
+    pass
 
-        print(Clr.style('{:>15s}'.format('Codename: '), Clr.BOLD_LABEL) + Clr.style(self.codename, Clr.VALUE))
-        print(Clr.style('{:>15s}'.format('Master: '), Clr.BOLD_LABEL) + Clr.style(self.master, Clr.VALUE))
-        print(Clr.style('{:>15s}'.format('Development: '), Clr.BOLD_LABEL) + Clr.style(self.development, Clr.VALUE))
-        print()
+class Kaishi(object):
+    '''
+    Each cranky command that is to be run as part of the beginning steps
+    of cranking a kernel are wrapped by their own function. There is then
+    a single function that runs each function in the propoer order.
+    '''
+    def __init__(self):
+        '''
+        Discover multiple properties about the directory that we are currently in. We
+        expect to be run in the root of an Ubuntu kernel repo. If we are not we figure
+        that out here and an exception is raised and the script aborted.
+        '''
+        try:
+            kernel_source    = Debian.get_source_from_kernel_series()
+            self.codename    = kernel_source.series.codename
+            self.master      = kernel_source.derived_from is None
+            self.development = kernel_source.series.development
+
+            print(Clr.style('{:>15s}'.format('Codename: '), Clr.BOLD_LABEL) + Clr.style(self.codename, Clr.VALUE))
+            print(Clr.style('{:>15s}'.format('Master: '), Clr.BOLD_LABEL) + Clr.style(self.master, Clr.VALUE))
+            print(Clr.style('{:>15s}'.format('Development: '), Clr.BOLD_LABEL) + Clr.style(self.development, Clr.VALUE))
+            print()
+        except (GitError, DebianError):
+            raise NotAKernelRepo('The directory you are currently sitting in is not the root of an Ubuntu kernel repository.')
 
     def cmd_update_version_dkms(self):
+        '''
+        Run the 'update-version-dkms' script in the current directory (Ubuntu kernel
+        repo root) if it exists. If it doesn't exist we just return silently.
+        '''
         if path.exists('./update-version-dkms'):
             print(Clr.style('{:s}'.format('Updating DKMS Versions ...'), Clr.SECTION))
             pocket = 'proposed' if self.development else 'updates'
@@ -50,10 +75,11 @@ class Kaishi(object):
                 output += 'found' + where
                 print(output)
             print()
-        else:
-            print('./update-version-dkms doesn\'t exist')
 
     def cmd_fix(self):
+        '''
+        cranky fix
+        '''
         print(Clr.style('{:s}'.format('Fixing ...'), Clr.SECTION))
         cmd = ['cranky', 'fix']
         output = sh(cmd)
@@ -62,22 +88,48 @@ class Kaishi(object):
         print()
 
     def cmd_rebase(self):
+        '''
+        cranky rebase
+        '''
+        print(Clr.style('{:s}'.format('Rebasing ...'), Clr.SECTION))
         cmd = ['cranky', 'rebase']
+        output = sh(cmd)
+        for line in output:
+            print(line)
+        print()
 
     def cmd_open(self):
+        '''
+        cranky open
+        '''
+        print(Clr.style('{:s}'.format('Opening ...'), Clr.SECTION))
         cmd = ['cranky', 'open']
+        output = sh(cmd)
+        for line in output:
+            print(line)
+        print()
 
     def execute(self):
+        '''
+        Run each of the kernel crank functions in the desired order.
+        '''
         self.cmd_update_version_dkms()
         self.cmd_fix()
-        self.cmd_rebase()
-        self.cmd_fix()
+
+        # Only run rebase on derivative kernels and we only need to rerun fix
+        # if we have run rebase.
+        #
+        if not self.master:
+            self.cmd_rebase()
+            self.cmd_fix()
         self.cmd_open()
         return 0
 
 
 if __name__ == '__main__':
-    app_description = '''"start" the cranking of a set of kernel packages.
+    app_description = '''
+Begin the cranking of a set of kernel packages. This command wraps multiple
+kernel cranking steps into a single command.
     '''
     app_epilog = '''
 Examples:
@@ -89,4 +141,10 @@ Examples:
 
     kernel_series = KernelSeries()
 
-    exit(Kaishi().execute())
+    try:
+        retval = Kaishi().execute()
+    except NotAKernelRepo as e:
+        print('*** Error: ' + str(e))
+        retval = 1
+
+    exit(retval)
