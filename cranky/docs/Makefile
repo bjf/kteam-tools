@@ -11,7 +11,7 @@ CHEATSHEET_TARGETS=cranking-the-kernel.cheatsheet.md
 	$(PWD)/cranky-generate-cheatsheet < $< > $@
 
 %.html: %.md
-	grip $< --export
+	pandoc -f markdown -t html -o $@ $<
 
 all: $(CHEATSHEET_TARGETS) $(TARGETS)
 
