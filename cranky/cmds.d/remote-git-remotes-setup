@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+#
+
+import os
+from argparse                           import ArgumentParser, RawTextHelpFormatter
+from subprocess                         import run, PIPE, STDOUT
+
+from crl.handle                         import Handle, HandleError
+
+def sh(cmd):
+    '''
+    A small wrapper around subprocess.run because I always run it the same way.
+    '''
+    results = run(cmd, check=True, stdout=PIPE, stderr=STDOUT)
+    output = results.stdout.decode('utf-8').split('\n')
+    for line in output:
+        print(line)
+    return output
+
+class RemotesSetup(object):
+    '''
+    '''
+    def __init__(self):
+        '''
+        '''
+        self.handle = Handle()
+
+    def execute(self, args):
+        '''
+        '''
+        try:
+            base = '/home/bradf/stable'
+
+            (codename, package) = args.handle.split(':')
+            # hs = self.handle.lookup_set(args.handle)
+            # codename = hs.series.codename
+            # package = hs.trees[0].package.name
+
+            root = base + '/' + codename
+            if not os.path.exists(root):
+                os.makedirs(root)
+            pkg = package.replace('linux-', '')
+
+            # If the hook already exists, assume the repo is good and there isn't anything
+            # to do.
+            #
+            if not os.path.exists('/home/bradf/stable/%s/%s/hooks/post-receive' % (codename, package)):
+                if pkg == 'linux':
+                    cmd = ['git', 'clone', '--bare', '/usr3/ubuntu/ubuntu-%s' % codename, '/home/bradf/stable/%s/%s' % (codename, package)]
+                else:
+                    cmd = ['git', 'clone', '--bare', '/usr3/ubuntu/ubuntu--%s-%s' % (pkg, codename), '/home/bradf/stable/%s/%s' % (codename, package)]
+                sh(cmd)
+                os.symlink('/usr3/ubuntu/kteam-tools/git-build-kernel/post-receive', '/home/bradf/stable/%s/%s/hooks/post-receive' % (codename, package))
+        except HandleError:
+            print('** Error: The handle is not recognised. The handle format is: <series>:<package>.')
+
+        return 0
+
+
+if __name__ == '__main__':
+    app_description = '''
+This is the part that runs on the remote builder to create the clones on the builder
+with the hook that allows the remote builds to be done.
+    '''
+    app_epilog = '''
+Examples:
+    cranky remote-git-remotes-setup
+    '''
+
+    help_handle = """
+Handle to a kernel source tree in <series>:<package> format.
+"""
+
+    parser = ArgumentParser(description=app_description, epilog=app_epilog, formatter_class=RawTextHelpFormatter)
+    parser.add_argument('handle', help=help_handle)
+    args = parser.parse_args()
+
+    retval = RemotesSetup().execute(args)
+
+    exit(retval)
