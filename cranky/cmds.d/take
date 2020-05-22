@@ -2,25 +2,23 @@
 #
 
 from argparse                           import ArgumentParser, RawTextHelpFormatter
-from mtrello                            import MTrello
+from trellohelp                         import TrelloHelp
 
 class Taker(object):
     def main(self, args):
         '''
         '''
-        mt = MTrello()
+        th = TrelloHelp()
 
-        # cranky wod (what's on deck?)
-        #
-        sru_board = mt.board_find(f'SRU Cycle {args.cycle}')
-        cards = mt.list_find_on_board(sru_board, 'On Deck').list_cards()
-        for card in cards:
-            if card.name.startswith('Crank ') and ' kernel' in card.name:
-                handle = card.name.split(' ')[2].replace('/', ':')
+        sru_board = th.board_find(f'SRU Cycle {args.cycle}')
+        the_list = th.list_find_on_board(sru_board, 'On Deck')
+        for card in th.trello.list_cards(the_list['id']):
+            if card['name'].startswith('Crank ') and ' kernel' in card['name']:
+                handle = card['name'].split(' ')[2].replace('/', ':')
                 if handle == args.handle:
-                    target_list = mt.list_find_on_board(sru_board, 'In Progress')
-                    card.change_list(target_list.id)
-                    card.add_member(mt.find_me())
+                    target_list = th.list_find_on_board(sru_board, 'In Progress')
+                    th.trello.card_update(card['id'], idList=target_list['id'], pos='bottom')
+                    th.trello.card_addmember(card['id'], th.me['id'])
                     break
 
 

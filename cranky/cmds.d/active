@@ -3,9 +3,26 @@
 
 from time                               import sleep
 from argparse                           import ArgumentParser, RawTextHelpFormatter
-from mtrello                            import MTrello
+from trellohelp                         import TrelloHelp
 
 class Activate(object):
+    def activate(self, args):
+        '''
+        '''
+        th = TrelloHelp()
+        card = th.card_find_on_list_on_board(f'SRU Cycle {args.cycle}', 'Cycle Roles', 'Active Crankers')
+        th.trello.card_addmember(card['id'], th.me['id'])
+
+    def deactivate(self, args):
+        '''
+        '''
+        th = TrelloHelp()
+        card = th.card_find_on_list_on_board(f'SRU Cycle {args.cycle}', 'Cycle Roles', 'Active Crankers')
+        th.trello.card_removemember(card['id'], th.me['id'])
+
+
+from mtrello                            import MTrello
+class xActivate(object):
     def activate(self, args):
         '''
         '''
@@ -30,11 +47,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description=app_description, epilog=app_epilog, formatter_class=RawTextHelpFormatter)
     parser.add_argument('cycle', help='SRU cycle tag (YYYY.MM.DD)')
     args = parser.parse_args()
-
-    while True:
-        retval = Activate().activate(args)
-        sleep(5)
-        retval = Activate().deactivate(args)
-        sleep(5)
-
+    retval = Activate().activate(args)
+    sleep(5)
+    retval = Activate().deactivate(args)
     exit(retval)
