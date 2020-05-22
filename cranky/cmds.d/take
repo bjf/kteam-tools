@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+#
+
+from argparse                           import ArgumentParser, RawTextHelpFormatter
+from mtrello                            import MTrello
+
+class Taker(object):
+    def main(self, args):
+        '''
+        '''
+        mt = MTrello()
+
+        # cranky wod (what's on deck?)
+        #
+        sru_board = mt.board_find(f'SRU Cycle {args.cycle}')
+        cards = mt.list_find_on_board(sru_board, 'On Deck').list_cards()
+        for card in cards:
+            if card.name.startswith('Crank ') and ' kernel' in card.name:
+                handle = card.name.split(' ')[2].replace('/', ':')
+                if handle == args.handle:
+                    target_list = mt.list_find_on_board(sru_board, 'In Progress')
+                    card.change_list(target_list.id)
+                    card.add_member(mt.find_me())
+                    break
+
+
+if __name__ == '__main__':
+    app_description = '''
+    '''
+    app_epilog = '''
+    '''
+
+    parser = ArgumentParser(description=app_description, epilog=app_epilog, formatter_class=RawTextHelpFormatter)
+    parser.add_argument('cycle', help='SRU cycle tag (YYYY.MM.DD)')
+    parser.add_argument('handle', help='<series>:<package>')
+    args = parser.parse_args()
+
+    retval = Taker().main(args)
+
+    exit(retval)
