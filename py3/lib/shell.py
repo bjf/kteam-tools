@@ -69,11 +69,12 @@ class ShellError(Exception):
 # enqueue_output
 #
 def enqueue_output(out, queue, quiet=False):
-    for line in iter(out.readline, b''):
+    for line in iter(out.readline, ''):
         queue.put(line)
         if not quiet:
-            stdout.write(line.decode('utf-8'))
+            stdout.write(line)
             stdout.flush()
+        out.flush()
     out.close()
 
 
@@ -85,7 +86,7 @@ def sh(cmd, timeout=None, ignore_result=False, quiet=False):
     cdebug('                     quiet : %s' % quiet)
     cdebug('             ignore_result : %s' % ignore_result)
     out = []
-    p = Popen(cmd, stdout=PIPE, stderr=STDOUT, bufsize=1, shell=True)
+    p = Popen(cmd, stdout=PIPE, stderr=STDOUT, shell=True, text=True)
     q = Queue()
     t = Thread(target=enqueue_output, args=(p.stdout, q, quiet))
     t.daemon = True # thread dies with the program
@@ -109,7 +110,7 @@ def sh(cmd, timeout=None, ignore_result=False, quiet=False):
         except Empty:
             pass
         else: # got line
-            out.append(line.decode('utf-8'))
+            out.append(line)
         sleep(1)
 
     while True:
@@ -118,7 +119,7 @@ def sh(cmd, timeout=None, ignore_result=False, quiet=False):
         except Empty:
             break
         else: # got line
-            out.append(line.decode('utf-8'))
+            out.append(line)
 
     if not ignore_result:
         if p.returncode != 0:
