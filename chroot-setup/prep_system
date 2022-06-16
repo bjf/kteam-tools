@@ -23,7 +23,7 @@ do
 	if ! dpkg -l | grep "$i" > /dev/null
 	then
 		echo Installing $i
-		apt-get install $i || exit 1
+		sudo apt-get install -y $i || exit 1
 	fi
 done
 
