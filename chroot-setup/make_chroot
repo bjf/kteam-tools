@@ -34,7 +34,7 @@ RELEASE_ARCH=${RELEASE}-${ARCH}
 #
 # Make sure you've all of the prerequisite packages installed.
 #
-PRE_REQS="debootstrap schroot kernel-wedge fakeroot gawk postfix binfmt-support"
+PRE_REQS="debootstrap schroot kernel-wedge fakeroot gawk binfmt-support"
 
 for i in ${PRE_REQS}
 do
