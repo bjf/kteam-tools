@@ -353,9 +353,9 @@ deb http://ppa.launchpad.net/canonical-kernel-team/builder-extra/ubuntu $SUITE m
 EOC
 
 ${SCHROOTCMD} -- dpkg --configure -a
-${SCHROOTCMD} -- apt-get -y --force-yes update
-${SCHROOTCMD} -- apt-get -u -y --force-yes dist-upgrade
-${SCHROOTCMD} -- apt-get -u -y --force-yes autoremove
+${SCHROOTCMD} -- apt-get -y --allow-change-held-packages update
+${SCHROOTCMD} -- apt-get -u -y --allow-change-held-packages dist-upgrade
+${SCHROOTCMD} -- apt-get -u -y --allow-change-held-packages autoremove
 
 if $DOINSTALL; then
 	#
@@ -371,16 +371,16 @@ do
 	installed=$( ${SCHROOTCMD} -- dpkg -l $i | grep '^ii' | wc -l )
 	if [ "$installed" -ne 0 ]; then
 		echo Removing $i
-		${SCHROOTCMD} -- apt-get -y --force-yes remove $i
+		${SCHROOTCMD} -- apt-get -y --allow-change-held-packages remove $i
 	fi
 done
 
 # Install build-essentials ...
-${SCHROOTCMD} -- apt-get -y --force-yes --no-install-recommends install build-essential
+${SCHROOTCMD} -- apt-get -y --allow-change-held-packages --no-install-recommends install build-essential
 
 # ... and then the build-dependencies of the packages we wish to build.
 echo ADDPKGDEP=${ADDPKGDEP}
-${SCHROOTCMD} -- apt-get -y --force-yes build-dep --only-source ${ADDPKGDEP}
+${SCHROOTCMD} -- apt-get -y --allow-change-held-packages build-dep --only-source ${ADDPKGDEP}
 
 # Finally add any addhoc packages such as cross compilers.
 echo ADDPKG=${ADDPKG}
@@ -389,6 +389,6 @@ do
 	installed=$( ${SCHROOTCMD} -- dpkg -l $i | grep '^ii' | wc -l )
 	if [ "$installed" -eq 0 ]; then
 		echo Installing $i
-		${SCHROOTCMD} -- apt-get -y --force-yes --no-install-recommends install $i
+		${SCHROOTCMD} -- apt-get -y --allow-change-held-packages --no-install-recommends install $i
 	fi
 done
