@@ -120,8 +120,7 @@ VERSION=`echo "$chg" | sed -n -e '1s/^.*(\([^)]*\)).*$/\1/p'`
 }
 
 ### Compile amd64 and i386 in a native chroot.
-### Cross-compile ARM in an amd64 chroot (for dramatically better performance).
-if [ "$ARCH" = "amd64" -o "$ARCH" = "i386" ]
+if [ "$ARCH" = "amd64" -o "$ARCH" = "i386" -o "$ARCH" = "arm64" ]
 then
 	CHROOT="$CHROOT-$ARCH"
 else
